@@ -44,7 +44,6 @@ class MainForm : Form
         BackColor = Color.White;
         KeyPreview = true;
 
-        Bitmap big = MakeLogo(32);
         Bitmap small = MakeLogo(16);
         Icon = Icon.FromHandle(MakeLogo(32).GetHicon());
         images = new ImageList();
@@ -52,31 +51,7 @@ class MainForm : Form
         images.ColorDepth = ColorDepth.Depth32Bit;
         images.Images.Add(small);
 
-        // header
-        Panel header = new Panel();
-        header.Dock = DockStyle.Top;
-        header.Height = 64;
-        header.BackColor = SapDark;
-        PictureBox logo = new PictureBox();
-        logo.Image = big;
-        logo.SizeMode = PictureBoxSizeMode.CenterImage;
-        logo.SetBounds(12, 14, 36, 36);
-        Label title = new Label();
-        title.Text = "SAP Logon";
-        title.ForeColor = Color.White;
-        title.Font = new Font("Segoe UI Semibold", 15f);
-        title.AutoSize = true;
-        title.Location = new Point(56, 8);
-        Label sub = new Label();
-        sub.Text = "Select a system and click Log On";
-        sub.ForeColor = Color.FromArgb(180, 200, 225);
-        sub.AutoSize = true;
-        sub.Location = new Point(58, 38);
-        header.Controls.Add(logo);
-        header.Controls.Add(title);
-        header.Controls.Add(sub);
-
-        // toolbar
+        // toolbar (at the very top, like the old SAP Logon)
         ToolStrip tb = new ToolStrip();
         tb.GripStyle = ToolStripGripStyle.Hidden;
         tb.BackColor = Color.FromArgb(243, 245, 248);
@@ -114,9 +89,7 @@ class MainForm : Form
 
         Controls.Add(list);
         Controls.Add(tb);
-        Controls.Add(header);
         Controls.Add(ss);
-        // dock order: header on top, toolbar below it
         list.BringToFront();
 
         KeyDown += delegate(object s, KeyEventArgs e)
