@@ -44,12 +44,16 @@ class MainForm : Form
         BackColor = Color.White;
         KeyPreview = true;
 
-        Bitmap small = MakeLogo(16);
-        Icon = Icon.FromHandle(MakeLogo(32).GetHicon());
+        try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); }
+        catch { Icon = Icon.FromHandle(MakeLogo(32).GetHicon()); }
         images = new ImageList();
         images.ImageSize = new Size(16, 16);
         images.ColorDepth = ColorDepth.Depth32Bit;
-        images.Images.Add(small);
+        images.Images.Add(MakeLogo(16));
+        ImageList large = new ImageList();
+        large.ImageSize = new Size(48, 48);
+        large.ColorDepth = ColorDepth.Depth32Bit;
+        large.Images.Add(MakeLogo(48));
 
         // toolbar (at the very top, like the old SAP Logon)
         ToolStrip tb = new ToolStrip();
@@ -68,6 +72,29 @@ class MainForm : Form
         tb.Items.Add(bEdit);
         tb.Items.Add(bDel);
 
+        // menu bar
+        MenuStrip menu = new MenuStrip();
+        ToolStripMenuItem mFile = new ToolStripMenuItem("&File");
+        mFile.DropDownItems.Add("&Log On", null, delegate { LogOn(); });
+        mFile.DropDownItems.Add("&New...", null, delegate { AddEntry(); });
+        mFile.DropDownItems.Add("&Edit...", null, delegate { EditEntry(); });
+        mFile.DropDownItems.Add("&Delete", null, delegate { DeleteEntry(); });
+        mFile.DropDownItems.Add(new ToolStripSeparator());
+        mFile.DropDownItems.Add("E&xit", null, delegate { Close(); });
+        ToolStripMenuItem mView = new ToolStripMenuItem("&View");
+        mView.DropDownItems.Add("&Details", null, delegate { list.View = View.Details; });
+        mView.DropDownItems.Add("&Large Icons", null, delegate { list.View = View.LargeIcon; });
+        mView.DropDownItems.Add("&List", null, delegate { list.View = View.List; });
+        ToolStripMenuItem mHelp = new ToolStripMenuItem("&Help");
+        mHelp.DropDownItems.Add("&About", null, delegate
+        {
+            MessageBox.Show("SAP Logon Lite 1.0\r\nLauncher for SAP WebGUI systems.", "About");
+        });
+        menu.Items.Add(mFile);
+        menu.Items.Add(mView);
+        menu.Items.Add(mHelp);
+        MainMenuStrip = menu;
+
         // list
         list = new ListView();
         list.Dock = DockStyle.Fill;
@@ -77,6 +104,7 @@ class MainForm : Form
         list.MultiSelect = false;
         list.BorderStyle = BorderStyle.None;
         list.SmallImageList = images;
+        list.LargeImageList = large;
         list.Columns.Add("Name", 200);
         list.Columns.Add("Description", 250);
         list.Columns.Add("URL", 340);
@@ -88,8 +116,9 @@ class MainForm : Form
         ss.Items.Add(status);
 
         Controls.Add(list);
-        Controls.Add(tb);
         Controls.Add(ss);
+        Controls.Add(tb);
+        Controls.Add(menu);
         list.BringToFront();
 
         KeyDown += delegate(object s, KeyEventArgs e)
