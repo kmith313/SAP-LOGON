@@ -1,0 +1,22 @@
+name: Build SAP Logon exe
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        shell: cmd
+        run: |
+          "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /out:"SAP Logon.exe" /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll SAPLogonLite.cs
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: SAP-Logon
+          path: SAP Logon.exe
