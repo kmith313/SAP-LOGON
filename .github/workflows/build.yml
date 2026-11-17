@@ -10,13 +10,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile
+      - name: Compile exe
         shell: cmd
         run: |
-          "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /out:"SAP Logon.exe" /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll SAPLogonLite.cs
+          "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /win32icon:app.ico /out:"SAP Logon.exe" /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll SAPLogonLite.cs
 
-      - name: Upload exe
+      - name: Install Inno Setup
+        shell: cmd
+        run: choco install innosetup -y --no-progress
+
+      - name: Build installer
+        shell: cmd
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+
+      - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: SAP-Logon
+          name: SAP-Logon-Setup
+          path: output/SAP-Logon-Setup.exe
+
+      - name: Upload plain exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: SAP-Logon-exe
           path: SAP Logon.exe
