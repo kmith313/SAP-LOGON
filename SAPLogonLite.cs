@@ -49,11 +49,11 @@ class MainForm : Form
         images = new ImageList();
         images.ImageSize = new Size(16, 16);
         images.ColorDepth = ColorDepth.Depth32Bit;
-        images.Images.Add(MakeLogo(16));
+        images.Images.Add(new Bitmap(Icon.ToBitmap(), new Size(16, 16)));
         ImageList large = new ImageList();
         large.ImageSize = new Size(48, 48);
         large.ColorDepth = ColorDepth.Depth32Bit;
-        large.Images.Add(MakeLogo(48));
+        large.Images.Add(new Bitmap(Icon.ToBitmap(), new Size(48, 48)));
 
         // toolbar (at the very top, like the old SAP Logon)
         ToolStrip tb = new ToolStrip();
